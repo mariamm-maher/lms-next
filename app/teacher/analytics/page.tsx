@@ -1,6 +1,8 @@
-import { auth } from '@/auth';
-import { prisma } from '@/lib/prisma';
-import { BarChart3, TrendingUp, Users, DollarSign } from 'lucide-react';
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import { BarChart3, TrendingUp, Users, DollarSign } from "lucide-react";
+
+export const runtime = "nodejs"; // ✅ Force Node.js runtime
 
 async function getAnalyticsData(teacherId: number) {
   const teacherProfile = await prisma.teacherProfile.findUnique({
@@ -32,7 +34,7 @@ async function getAnalyticsData(teacherId: number) {
 
   const completedEnrollments = teacherProfile.courses.reduce(
     (sum, course) =>
-      sum + course.enrollments.filter((e) => e.status === 'COMPLETED').length,
+      sum + course.enrollments.filter((e) => e.status === "COMPLETED").length,
     0
   );
 
@@ -47,7 +49,7 @@ async function getAnalyticsData(teacherId: number) {
 
   const payments = await prisma.payment.findMany({
     where: {
-      status: 'COMPLETED',
+      status: "COMPLETED",
       courseId: {
         in: teacherProfile.courses.map((c) => c.id),
       },
@@ -62,7 +64,7 @@ async function getAnalyticsData(teacherId: number) {
     enrollments: course.enrollments.length,
     completionRate:
       course.enrollments.length > 0
-        ? (course.enrollments.filter((e) => e.status === 'COMPLETED').length /
+        ? (course.enrollments.filter((e) => e.status === "COMPLETED").length /
             course.enrollments.length) *
           100
         : 0,
@@ -84,7 +86,7 @@ async function getAnalyticsData(teacherId: number) {
 
 export default async function TeacherAnalyticsPage() {
   const session = await auth();
-  const userId = parseInt(session?.user?.id || '0');
+  const userId = parseInt(session?.user?.id || "0");
   const analytics = await getAnalyticsData(userId);
 
   return (
@@ -206,7 +208,9 @@ export default async function TeacherAnalyticsPage() {
             Weekly Active Students
           </h2>
           <div className="h-64 flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg">
-            <p className="text-gray-500">Chart placeholder - integrate with recharts</p>
+            <p className="text-gray-500">
+              Chart placeholder - integrate with recharts
+            </p>
           </div>
         </div>
 
@@ -215,7 +219,9 @@ export default async function TeacherAnalyticsPage() {
             Revenue by Month
           </h2>
           <div className="h-64 flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg">
-            <p className="text-gray-500">Chart placeholder - integrate with recharts</p>
+            <p className="text-gray-500">
+              Chart placeholder - integrate with recharts
+            </p>
           </div>
         </div>
       </div>

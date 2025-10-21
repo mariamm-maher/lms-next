@@ -1,11 +1,19 @@
-import { auth } from '@/auth';
-import { prisma } from '@/lib/prisma';
-import { Bell, FileText, ClipboardList, MessageSquare, AlertCircle } from 'lucide-react';
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import {
+  Bell,
+  FileText,
+  ClipboardList,
+  MessageSquare,
+  AlertCircle,
+} from "lucide-react";
+
+export const runtime = "nodejs"; // ✅ Force Node.js runtime
 
 async function getNotifications(teacherId: number) {
   const notifications = await prisma.notification.findMany({
     where: { userId: teacherId },
-    orderBy: { createdAt: 'desc' },
+    orderBy: { createdAt: "desc" },
     take: 50,
   });
 
@@ -14,16 +22,16 @@ async function getNotifications(teacherId: number) {
 
 export default async function TeacherNotificationsPage() {
   const session = await auth();
-  const userId = parseInt(session?.user?.id || '0');
+  const userId = parseInt(session?.user?.id || "0");
   const notifications = await getNotifications(userId);
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
-      case 'ASSIGNMENT':
+      case "ASSIGNMENT":
         return FileText;
-      case 'QUIZ':
+      case "QUIZ":
         return ClipboardList;
-      case 'MESSAGE':
+      case "MESSAGE":
         return MessageSquare;
       default:
         return Bell;
@@ -32,16 +40,16 @@ export default async function TeacherNotificationsPage() {
 
   const getNotificationColor = (type: string) => {
     switch (type) {
-      case 'ASSIGNMENT':
-        return 'from-blue-500 to-cyan-500';
-      case 'QUIZ':
-        return 'from-purple-500 to-pink-500';
-      case 'MESSAGE':
-        return 'from-green-500 to-emerald-500';
-      case 'GRADE':
-        return 'from-yellow-500 to-orange-500';
+      case "ASSIGNMENT":
+        return "from-blue-500 to-cyan-500";
+      case "QUIZ":
+        return "from-purple-500 to-pink-500";
+      case "MESSAGE":
+        return "from-green-500 to-emerald-500";
+      case "GRADE":
+        return "from-yellow-500 to-orange-500";
       default:
-        return 'from-indigo-500 to-purple-500';
+        return "from-indigo-500 to-purple-500";
     }
   };
 
@@ -73,11 +81,13 @@ export default async function TeacherNotificationsPage() {
               <div
                 key={notification.id}
                 className={`bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-4 ${
-                  !notification.isRead ? 'border-l-4 border-indigo-500' : ''
+                  !notification.isRead ? "border-l-4 border-indigo-500" : ""
                 }`}
               >
                 <div className="flex items-start gap-4">
-                  <div className={`p-3 bg-gradient-to-br ${color} rounded-lg flex-shrink-0`}>
+                  <div
+                    className={`p-3 bg-gradient-to-br ${color} rounded-lg flex-shrink-0`}
+                  >
                     <Icon className="w-5 h-5 text-white" />
                   </div>
                   <div className="flex-1">

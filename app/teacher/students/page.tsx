@@ -1,10 +1,14 @@
-import { auth } from '@/auth';
-import { prisma } from '@/lib/prisma';
-import { StudentProgress } from '@/types/teacher';
-import { Search, User, TrendingUp, BookOpen } from 'lucide-react';
-import Link from 'next/link';
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import { StudentProgress } from "@/types/teacher";
+import { Search, User, TrendingUp, BookOpen } from "lucide-react";
+import Link from "next/link";
 
-async function getStudentProgress(teacherId: number): Promise<StudentProgress[]> {
+export const runtime = "nodejs"; // ✅ Force Node.js runtime
+
+async function getStudentProgress(
+  teacherId: number
+): Promise<StudentProgress[]> {
   const teacherProfile = await prisma.teacherProfile.findUnique({
     where: { userId: teacherId },
   });
@@ -47,7 +51,7 @@ async function getStudentProgress(teacherId: number): Promise<StudentProgress[]>
       },
     },
     orderBy: {
-      createdAt: 'desc',
+      createdAt: "desc",
     },
   });
 
@@ -83,7 +87,7 @@ async function getStudentProgress(teacherId: number): Promise<StudentProgress[]>
 
 export default async function TeacherStudentsPage() {
   const session = await auth();
-  const userId = parseInt(session?.user?.id || '0');
+  const userId = parseInt(session?.user?.id || "0");
   const students = await getStudentProgress(userId);
 
   return (
@@ -183,7 +187,8 @@ export default async function TeacherStudentsPage() {
                       <div className="space-y-1">
                         <div className="flex items-center justify-between text-sm">
                           <span className="text-gray-600">
-                            {student.completedLessons}/{student.totalLessons} lessons
+                            {student.completedLessons}/{student.totalLessons}{" "}
+                            lessons
                           </span>
                           <span className="font-semibold text-indigo-600">
                             {student.progress.toFixed(0)}%

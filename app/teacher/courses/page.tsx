@@ -1,9 +1,11 @@
-import { auth } from '@/auth';
-import { prisma } from '@/lib/prisma';
-import CourseCard from '@/components/teacher/CourseCard';
-import { TeacherCourse } from '@/types/teacher';
-import { Plus, Search } from 'lucide-react';
-import Link from 'next/link';
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import CourseCard from "@/components/teacher/CourseCard";
+import { TeacherCourse } from "@/types/teacher";
+import { Plus, Search } from "lucide-react";
+import Link from "next/link";
+
+export const runtime = "nodejs"; // ✅ Force Node.js runtime
 
 async function getTeacherCourses(teacherId: number): Promise<TeacherCourse[]> {
   const teacherProfile = await prisma.teacherProfile.findUnique({
@@ -18,7 +20,7 @@ async function getTeacherCourses(teacherId: number): Promise<TeacherCourse[]> {
       enrollments: true,
       reviews: true,
     },
-    orderBy: { createdAt: 'desc' },
+    orderBy: { createdAt: "desc" },
   });
 
   return courses.map((course) => ({
@@ -45,7 +47,7 @@ async function getTeacherCourses(teacherId: number): Promise<TeacherCourse[]> {
 
 export default async function TeacherCoursesPage() {
   const session = await auth();
-  const userId = parseInt(session?.user?.id || '0');
+  const userId = parseInt(session?.user?.id || "0");
   const courses = await getTeacherCourses(userId);
 
   return (
@@ -56,9 +58,7 @@ export default async function TeacherCoursesPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
             My Courses
           </h1>
-          <p className="text-gray-600 mt-1">
-            Manage and create your courses
-          </p>
+          <p className="text-gray-600 mt-1">Manage and create your courses</p>
         </div>
         <Link
           href="/teacher/courses/add"
@@ -105,7 +105,8 @@ export default async function TeacherCoursesPage() {
               No courses yet
             </h3>
             <p className="text-gray-600 mb-6">
-              Start creating your first course to share your knowledge with students.
+              Start creating your first course to share your knowledge with
+              students.
             </p>
             <Link
               href="/teacher/courses/add"

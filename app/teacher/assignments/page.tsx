@@ -1,7 +1,9 @@
-import { auth } from '@/auth';
-import { prisma } from '@/lib/prisma';
-import { FileText, Plus, Calendar, Users, CheckCircle } from 'lucide-react';
-import Link from 'next/link';
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import { FileText, Plus, Calendar, Users, CheckCircle } from "lucide-react";
+import Link from "next/link";
+
+export const runtime = "nodejs"; // ✅ Force Node.js runtime
 
 async function getTeacherAssignments(teacherId: number) {
   const teacherProfile = await prisma.teacherProfile.findUnique({
@@ -24,7 +26,7 @@ async function getTeacherAssignments(teacherId: number) {
         },
       },
     },
-    orderBy: { createdAt: 'desc' },
+    orderBy: { createdAt: "desc" },
   });
 
   return assignments;
@@ -32,7 +34,7 @@ async function getTeacherAssignments(teacherId: number) {
 
 export default async function TeacherAssignmentsPage() {
   const session = await auth();
-  const userId = parseInt(session?.user?.id || '0');
+  const userId = parseInt(session?.user?.id || "0");
   const assignments = await getTeacherAssignments(userId);
 
   return (
@@ -62,10 +64,10 @@ export default async function TeacherAssignmentsPage() {
           {assignments.map((assignment) => {
             const totalSubmissions = assignment.submissions.length;
             const gradedSubmissions = assignment.submissions.filter(
-              (s) => s.status === 'GRADED'
+              (s) => s.status === "GRADED"
             ).length;
             const pendingSubmissions = assignment.submissions.filter(
-              (s) => s.status === 'SUBMITTED'
+              (s) => s.status === "SUBMITTED"
             ).length;
 
             const isOverdue = new Date(assignment.dueDate) < new Date();
@@ -92,7 +94,8 @@ export default async function TeacherAssignmentsPage() {
                       <div className="flex items-center gap-4 text-sm text-gray-600">
                         <span className="flex items-center gap-1">
                           <Calendar className="w-4 h-4" />
-                          Due: {new Date(assignment.dueDate).toLocaleDateString()}
+                          Due:{" "}
+                          {new Date(assignment.dueDate).toLocaleDateString()}
                         </span>
                         <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
                           {assignment.course.title}

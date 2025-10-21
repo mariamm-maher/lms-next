@@ -1,6 +1,8 @@
-import { auth } from '@/auth';
-import { prisma } from '@/lib/prisma';
-import { DollarSign, CreditCard, TrendingUp, Calendar } from 'lucide-react';
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import { DollarSign, CreditCard, TrendingUp, Calendar } from "lucide-react";
+
+export const runtime = "nodejs"; // ✅ Force Node.js runtime
 
 async function getPaymentData(teacherId: number) {
   const teacherProfile = await prisma.teacherProfile.findUnique({
@@ -18,7 +20,7 @@ async function getPaymentData(teacherId: number) {
 
   const payments = await prisma.payment.findMany({
     where: {
-      status: 'COMPLETED',
+      status: "COMPLETED",
       courseId: {
         in: await prisma.course
           .findMany({
@@ -28,7 +30,7 @@ async function getPaymentData(teacherId: number) {
           .then((courses) => courses.map((c) => c.id)),
       },
     },
-    orderBy: { createdAt: 'desc' },
+    orderBy: { createdAt: "desc" },
     take: 20,
   });
 
@@ -44,7 +46,7 @@ async function getPaymentData(teacherId: number) {
 
 export default async function TeacherPaymentsPage() {
   const session = await auth();
-  const userId = parseInt(session?.user?.id || '0');
+  const userId = parseInt(session?.user?.id || "0");
   const paymentData = await getPaymentData(userId);
 
   return (
@@ -174,7 +176,7 @@ export default async function TeacherPaymentsPage() {
                       {new Date(transaction.createdAt).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-900">
-                      {transaction.description || 'Course Payment'}
+                      {transaction.description || "Course Payment"}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-600">
                       {transaction.method}
@@ -193,9 +195,7 @@ export default async function TeacherPaymentsPage() {
             </table>
           </div>
         ) : (
-          <p className="text-gray-500 text-center py-8">
-            No transactions yet
-          </p>
+          <p className="text-gray-500 text-center py-8">No transactions yet</p>
         )}
       </div>
     </div>

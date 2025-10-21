@@ -1,8 +1,18 @@
-import { auth } from '@/auth';
-import { prisma } from '@/lib/prisma';
-import { ArrowLeft, User, Mail, BookOpen, TrendingUp, Calendar, Award } from 'lucide-react';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import {
+  ArrowLeft,
+  User,
+  Mail,
+  BookOpen,
+  TrendingUp,
+  Calendar,
+  Award,
+} from "lucide-react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+
+export const runtime = "nodejs"; // ✅ Force Node.js runtime
 
 async function getStudentDetails(studentId: number, teacherId: number) {
   const teacherProfile = await prisma.teacherProfile.findUnique({
@@ -43,7 +53,7 @@ async function getStudentDetails(studentId: number, teacherId: number) {
           },
         },
         orderBy: {
-          submittedAt: 'desc',
+          submittedAt: "desc",
         },
       },
       quizAttempts: {
@@ -60,7 +70,7 @@ async function getStudentDetails(studentId: number, teacherId: number) {
           },
         },
         orderBy: {
-          attemptedAt: 'desc',
+          attemptedAt: "desc",
         },
       },
       progress: {
@@ -84,7 +94,7 @@ export default async function StudentDetailPage({
   params: { id: string };
 }) {
   const session = await auth();
-  const userId = parseInt(session?.user?.id || '0');
+  const userId = parseInt(session?.user?.id || "0");
   const studentId = parseInt(params.id);
 
   const student = await getStudentDetails(studentId, userId);
@@ -103,9 +113,7 @@ export default async function StudentDetailPage({
   const overallProgress =
     totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
 
-  const gradedSubmissions = student.submissions.filter(
-    (s) => s.grade !== null
-  );
+  const gradedSubmissions = student.submissions.filter((s) => s.grade !== null);
   const averageGrade =
     gradedSubmissions.length > 0
       ? gradedSubmissions.reduce((sum, s) => sum + (s.grade || 0), 0) /
@@ -165,9 +173,7 @@ export default async function StudentDetailPage({
                 </div>
               )}
             </div>
-            {student.bio && (
-              <p className="text-gray-700 mb-3">{student.bio}</p>
-            )}
+            {student.bio && <p className="text-gray-700 mb-3">{student.bio}</p>}
             {student.interests && (
               <div>
                 <p className="text-sm text-gray-600 mb-1">Interests:</p>
@@ -244,11 +250,11 @@ export default async function StudentDetailPage({
                     </h3>
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        enrollment.status === 'COMPLETED'
-                          ? 'bg-green-100 text-green-700'
-                          : enrollment.status === 'ACTIVE'
-                          ? 'bg-blue-100 text-blue-700'
-                          : 'bg-gray-200 text-gray-700'
+                        enrollment.status === "COMPLETED"
+                          ? "bg-green-100 text-green-700"
+                          : enrollment.status === "ACTIVE"
+                          ? "bg-blue-100 text-blue-700"
+                          : "bg-gray-200 text-gray-700"
                       }`}
                     >
                       {enrollment.status}
@@ -257,7 +263,7 @@ export default async function StudentDetailPage({
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-600">
-                        {completedInCourse}/{enrollment.course.lessons.length}{' '}
+                        {completedInCourse}/{enrollment.course.lessons.length}{" "}
                         lessons completed
                       </span>
                       <span className="font-semibold text-indigo-600">
@@ -272,7 +278,8 @@ export default async function StudentDetailPage({
                     </div>
                   </div>
                   <div className="mt-2 text-xs text-gray-500">
-                    Enrolled: {new Date(enrollment.createdAt).toLocaleDateString()}
+                    Enrolled:{" "}
+                    {new Date(enrollment.createdAt).toLocaleDateString()}
                   </div>
                 </div>
               );
@@ -305,7 +312,8 @@ export default async function StudentDetailPage({
                     {submission.assignment.course.title}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">
-                    Submitted: {new Date(submission.submittedAt).toLocaleDateString()}
+                    Submitted:{" "}
+                    {new Date(submission.submittedAt).toLocaleDateString()}
                   </p>
                 </div>
                 <div className="text-right">
@@ -348,23 +356,24 @@ export default async function StudentDetailPage({
                     {attempt.quiz.course.title}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">
-                    Attempted: {new Date(attempt.attemptedAt).toLocaleDateString()}
+                    Attempted:{" "}
+                    {new Date(attempt.attemptedAt).toLocaleDateString()}
                   </p>
                 </div>
                 <div className="text-right">
                   <p
                     className={`text-2xl font-bold ${
                       attempt.score >= attempt.quiz.passingScore
-                        ? 'text-green-600'
-                        : 'text-red-600'
+                        ? "text-green-600"
+                        : "text-red-600"
                     }`}
                   >
                     {attempt.score.toFixed(0)}%
                   </p>
                   <p className="text-xs text-gray-500">
                     {attempt.score >= attempt.quiz.passingScore
-                      ? 'Passed'
-                      : 'Failed'}
+                      ? "Passed"
+                      : "Failed"}
                   </p>
                 </div>
               </div>

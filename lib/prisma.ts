@@ -1,4 +1,5 @@
-import { PrismaClient } from "@/app/generated/prisma";
+// Import from the default (Node.js) export, NOT edge.js
+import { PrismaClient } from "@/app/generated/prisma/default";
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 

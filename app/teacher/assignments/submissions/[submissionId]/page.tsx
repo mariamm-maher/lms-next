@@ -1,9 +1,11 @@
-import { auth } from '@/auth';
-import { prisma } from '@/lib/prisma';
-import { ArrowLeft, User, Calendar, FileText, Download } from 'lucide-react';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import GradeSubmissionForm from '@/components/teacher/GradeSubmissionForm';
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import { ArrowLeft, User, Calendar, FileText, Download } from "lucide-react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import GradeSubmissionForm from "@/components/teacher/GradeSubmissionForm";
+
+export const runtime = "nodejs"; // ✅ Force Node.js runtime
 
 async function getSubmissionDetails(submissionId: number, teacherId: number) {
   const teacherProfile = await prisma.teacherProfile.findUnique({
@@ -42,7 +44,7 @@ export default async function GradeSubmissionPage({
   params: { submissionId: string };
 }) {
   const session = await auth();
-  const userId = parseInt(session?.user?.id || '0');
+  const userId = parseInt(session?.user?.id || "0");
   const submissionId = parseInt(params.submissionId);
 
   const submission = await getSubmissionDetails(submissionId, userId);
@@ -53,14 +55,14 @@ export default async function GradeSubmissionPage({
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'GRADED':
-        return 'bg-green-100 text-green-700';
-      case 'SUBMITTED':
-        return 'bg-blue-100 text-blue-700';
-      case 'LATE':
-        return 'bg-red-100 text-red-700';
+      case "GRADED":
+        return "bg-green-100 text-green-700";
+      case "SUBMITTED":
+        return "bg-blue-100 text-blue-700";
+      case "LATE":
+        return "bg-red-100 text-red-700";
       default:
-        return 'bg-gray-100 text-gray-700';
+        return "bg-gray-100 text-gray-700";
     }
   };
 
@@ -80,7 +82,11 @@ export default async function GradeSubmissionPage({
           </h1>
           <p className="text-gray-600 mt-1">{submission.assignment.title}</p>
         </div>
-        <span className={`px-4 py-2 rounded-full text-sm font-semibold ${getStatusColor(submission.status)}`}>
+        <span
+          className={`px-4 py-2 rounded-full text-sm font-semibold ${getStatusColor(
+            submission.status
+          )}`}
+        >
           {submission.status}
         </span>
       </div>
@@ -93,7 +99,7 @@ export default async function GradeSubmissionPage({
             <h2 className="text-xl font-bold text-gray-900 mb-4">
               Submission Content
             </h2>
-            
+
             {submission.content ? (
               <div className="prose max-w-none">
                 <div className="p-4 bg-gray-50 rounded-lg whitespace-pre-wrap">
@@ -132,7 +138,7 @@ export default async function GradeSubmissionPage({
           </div>
 
           {/* Current Grade & Feedback */}
-          {submission.status === 'GRADED' && (
+          {submission.status === "GRADED" && (
             <div className="bg-white rounded-xl shadow-md p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4">
                 Current Grade

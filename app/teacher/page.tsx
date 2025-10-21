@@ -1,10 +1,12 @@
-import { auth } from '@/auth';
-import { prisma } from '@/lib/prisma';
-import DashboardStats from '@/components/teacher/DashboardStats';
-import { DashboardStatsData } from '@/types/teacher';
-import { BookOpen, FileText, Plus, Users } from 'lucide-react';
-import Link from 'next/link';
-import DashboardHeader from '@/components/teacher/DashboardHeader';
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import DashboardStats from "@/components/teacher/DashboardStats";
+import { DashboardStatsData } from "@/types/teacher";
+import { BookOpen, FileText, Plus, Users } from "lucide-react";
+import Link from "next/link";
+import DashboardHeader from "@/components/teacher/DashboardHeader";
+
+export const runtime = "nodejs"; // ✅ Force Node.js runtime
 
 async function getRecentSubmissions(teacherId: number) {
   const teacherProfile = await prisma.teacherProfile.findUnique({
@@ -18,7 +20,7 @@ async function getRecentSubmissions(teacherId: number) {
       assignment: {
         teacherId: teacherProfile.id,
       },
-      status: 'SUBMITTED',
+      status: "SUBMITTED",
     },
     include: {
       assignment: true,
@@ -29,7 +31,7 @@ async function getRecentSubmissions(teacherId: number) {
       },
     },
     orderBy: {
-      submittedAt: 'desc',
+      submittedAt: "desc",
     },
     take: 5,
   });
@@ -37,7 +39,9 @@ async function getRecentSubmissions(teacherId: number) {
   return submissions;
 }
 
-async function getDashboardStats(teacherId: number): Promise<DashboardStatsData> {
+async function getDashboardStats(
+  teacherId: number
+): Promise<DashboardStatsData> {
   // Get teacher profile
   const teacherProfile = await prisma.teacherProfile.findUnique({
     where: { userId: teacherId },
@@ -75,11 +79,13 @@ async function getDashboardStats(teacherId: number): Promise<DashboardStatsData>
     },
   });
 
-  const activeCourses = teacherProfile.courses.filter((c) => c.isPublished).length;
+  const activeCourses = teacherProfile.courses.filter(
+    (c) => c.isPublished
+  ).length;
 
   const payments = await prisma.payment.findMany({
     where: {
-      status: 'COMPLETED',
+      status: "COMPLETED",
       courseId: {
         in: teacherProfile.courses.map((c) => c.id),
       },
@@ -88,7 +94,9 @@ async function getDashboardStats(teacherId: number): Promise<DashboardStatsData>
 
   const totalRevenue = payments.reduce((sum, p) => sum + p.amount, 0);
 
-  const allSubmissions = teacherProfile.assignments.flatMap((a) => a.submissions);
+  const allSubmissions = teacherProfile.assignments.flatMap(
+    (a) => a.submissions
+  );
   const gradedSubmissions = allSubmissions.filter((s) => s.grade !== null);
   const averageGrade =
     gradedSubmissions.length > 0
@@ -96,14 +104,16 @@ async function getDashboardStats(teacherId: number): Promise<DashboardStatsData>
         gradedSubmissions.length
       : 0;
 
-  const pendingSubmissions = allSubmissions.filter((s) => s.status === 'SUBMITTED').length;
+  const pendingSubmissions = allSubmissions.filter(
+    (s) => s.status === "SUBMITTED"
+  ).length;
 
   const completedEnrollments = await prisma.enrollment.count({
     where: {
       course: {
         teacherId: teacherProfile.id,
       },
-      status: 'COMPLETED',
+      status: "COMPLETED",
     },
   });
 
@@ -122,7 +132,7 @@ async function getDashboardStats(teacherId: number): Promise<DashboardStatsData>
 
 export default async function TeacherDashboard() {
   const session = await auth();
-  const userId = parseInt(session?.user?.id || '0');
+  const userId = parseInt(session?.user?.id || "0");
 
   const stats = await getDashboardStats(userId);
   const recentSubmissions = await getRecentSubmissions(userId);
@@ -139,7 +149,7 @@ export default async function TeacherDashboard() {
       <div className="relative bg-gradient-to-br from-gray-50 to-gray-100/50 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-gray-200/50 overflow-hidden">
         {/* Background decoration */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full blur-3xl opacity-30 -translate-y-1/2 translate-x-1/2"></div>
-        
+
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-1 h-8 bg-gradient-to-b from-indigo-500 to-purple-500 rounded-full"></div>
@@ -148,7 +158,7 @@ export default async function TeacherDashboard() {
             </h2>
             <div className="flex-1 h-px bg-gradient-to-r from-gray-300 to-transparent"></div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Link
               href="/teacher/courses/add"
@@ -221,7 +231,7 @@ export default async function TeacherDashboard() {
       <div className="relative bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-gray-200/50 overflow-hidden">
         {/* Background decoration */}
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full blur-3xl opacity-20 translate-y-1/2 -translate-x-1/2"></div>
-        
+
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-1 h-8 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full"></div>
@@ -230,7 +240,7 @@ export default async function TeacherDashboard() {
             </h2>
             <div className="flex-1 h-px bg-gradient-to-r from-gray-300 to-transparent"></div>
           </div>
-          
+
           {recentSubmissions.length > 0 ? (
             <div className="space-y-3">
               {recentSubmissions.map((submission, index) => (
@@ -245,7 +255,7 @@ export default async function TeacherDashboard() {
                       <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
                         {submission.student.user.name.charAt(0)}
                       </div>
-                      
+
                       <div className="flex-1">
                         <p className="font-bold text-gray-900 mb-1">
                           {submission.student.user.name}
@@ -256,17 +266,19 @@ export default async function TeacherDashboard() {
                         </p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center gap-4">
                       <div className="text-right">
                         <p className="text-xs text-gray-500 mb-1">
-                          {new Date(submission.submittedAt).toLocaleDateString()}
+                          {new Date(
+                            submission.submittedAt
+                          ).toLocaleDateString()}
                         </p>
                         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">
                           Pending
                         </span>
                       </div>
-                      
+
                       <Link
                         href={`/teacher/assignments/submissions/${submission.id}`}
                         className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all shadow-md hover:shadow-lg font-medium text-sm group-hover:scale-105"
@@ -283,7 +295,9 @@ export default async function TeacherDashboard() {
               <div className="w-20 h-20 bg-gradient-to-br from-gray-200 to-gray-300 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FileText className="w-10 h-10 text-gray-400" />
               </div>
-              <p className="text-gray-500 font-medium">No pending submissions</p>
+              <p className="text-gray-500 font-medium">
+                No pending submissions
+              </p>
               <p className="text-sm text-gray-400 mt-1">All caught up! 🎉</p>
             </div>
           )}

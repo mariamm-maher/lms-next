@@ -1,7 +1,9 @@
-import { auth } from '@/auth';
-import { prisma } from '@/lib/prisma';
-import { ClipboardList, Plus, Users, BarChart } from 'lucide-react';
-import Link from 'next/link';
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import { ClipboardList, Plus, Users, BarChart } from "lucide-react";
+import Link from "next/link";
+
+export const runtime = "nodejs"; // ✅ Force Node.js runtime
 
 async function getTeacherQuizzes(teacherId: number) {
   const teacherProfile = await prisma.teacherProfile.findUnique({
@@ -25,7 +27,7 @@ async function getTeacherQuizzes(teacherId: number) {
       },
       questions: true,
     },
-    orderBy: { createdAt: 'desc' },
+    orderBy: { createdAt: "desc" },
   });
 
   return quizzes;
@@ -33,7 +35,7 @@ async function getTeacherQuizzes(teacherId: number) {
 
 export default async function TeacherQuizzesPage() {
   const session = await auth();
-  const userId = parseInt(session?.user?.id || '0');
+  const userId = parseInt(session?.user?.id || "0");
   const quizzes = await getTeacherQuizzes(userId);
 
   return (
@@ -44,9 +46,7 @@ export default async function TeacherQuizzesPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
             Quizzes
           </h1>
-          <p className="text-gray-600 mt-1">
-            Create and manage course quizzes
-          </p>
+          <p className="text-gray-600 mt-1">Create and manage course quizzes</p>
         </div>
         <Link
           href="/teacher/quizzes/create"

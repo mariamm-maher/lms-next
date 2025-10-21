@@ -1,6 +1,14 @@
-import { auth } from '@/auth';
-import { prisma } from '@/lib/prisma';
-import { User, Mail, Book, Award, Settings as SettingsIcon } from 'lucide-react';
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import {
+  User,
+  Mail,
+  Book,
+  Award,
+  Settings as SettingsIcon,
+} from "lucide-react";
+
+export const runtime = "nodejs"; // ✅ Force Node.js runtime
 
 async function getTeacherProfile(userId: number) {
   const user = await prisma.user.findUnique({
@@ -15,7 +23,7 @@ async function getTeacherProfile(userId: number) {
 
 export default async function TeacherSettingsPage() {
   const session = await auth();
-  const userId = parseInt(session?.user?.id || '0');
+  const userId = parseInt(session?.user?.id || "0");
   const user = await getTeacherProfile(userId);
 
   return (
@@ -36,7 +44,9 @@ export default async function TeacherSettingsPage() {
           <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg">
             <User className="w-5 h-5 text-white" />
           </div>
-          <h2 className="text-xl font-bold text-gray-900">Profile Information</h2>
+          <h2 className="text-xl font-bold text-gray-900">
+            Profile Information
+          </h2>
         </div>
 
         <div className="space-y-4">
@@ -67,7 +77,7 @@ export default async function TeacherSettingsPage() {
               Bio
             </label>
             <textarea
-              defaultValue={user?.teacherProfile?.bio || ''}
+              defaultValue={user?.teacherProfile?.bio || ""}
               rows={4}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               placeholder="Tell students about yourself..."
@@ -80,7 +90,7 @@ export default async function TeacherSettingsPage() {
             </label>
             <input
               type="text"
-              defaultValue={user?.teacherProfile?.expertise || ''}
+              defaultValue={user?.teacherProfile?.expertise || ""}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               placeholder="e.g., Web Development, Data Science"
             />
@@ -104,7 +114,7 @@ export default async function TeacherSettingsPage() {
               </label>
               <input
                 type="text"
-                defaultValue={user?.teacherProfile?.education || ''}
+                defaultValue={user?.teacherProfile?.education || ""}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 placeholder="e.g., PhD in Computer Science"
               />
@@ -117,7 +127,7 @@ export default async function TeacherSettingsPage() {
             </label>
             <input
               type="url"
-              defaultValue={user?.teacherProfile?.photoUrl || ''}
+              defaultValue={user?.teacherProfile?.photoUrl || ""}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               placeholder="https://..."
             />
@@ -135,7 +145,9 @@ export default async function TeacherSettingsPage() {
           <div className="p-2 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg">
             <SettingsIcon className="w-5 h-5 text-white" />
           </div>
-          <h2 className="text-xl font-bold text-gray-900">Notification Preferences</h2>
+          <h2 className="text-xl font-bold text-gray-900">
+            Notification Preferences
+          </h2>
         </div>
 
         <div className="space-y-4">
@@ -145,7 +157,9 @@ export default async function TeacherSettingsPage() {
               defaultChecked
               className="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
             />
-            <span className="text-gray-700">Email notifications for new submissions</span>
+            <span className="text-gray-700">
+              Email notifications for new submissions
+            </span>
           </label>
 
           <label className="flex items-center gap-3 cursor-pointer">
@@ -154,7 +168,9 @@ export default async function TeacherSettingsPage() {
               defaultChecked
               className="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
             />
-            <span className="text-gray-700">Email notifications for new enrollments</span>
+            <span className="text-gray-700">
+              Email notifications for new enrollments
+            </span>
           </label>
 
           <label className="flex items-center gap-3 cursor-pointer">
@@ -178,13 +194,15 @@ export default async function TeacherSettingsPage() {
 
       {/* Account Security */}
       <div className="bg-white rounded-xl shadow-md p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-6">Account Security</h2>
-        
+        <h2 className="text-xl font-bold text-gray-900 mb-6">
+          Account Security
+        </h2>
+
         <div className="space-y-4">
           <button className="w-full px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium text-left">
             Change Password
           </button>
-          
+
           <button className="w-full px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium text-left">
             Enable Two-Factor Authentication
           </button>

@@ -1,8 +1,18 @@
-import { auth } from '@/auth';
-import { prisma } from '@/lib/prisma';
-import { BookOpen, Users, Clock, DollarSign, Edit, Plus, Trash2 } from 'lucide-react';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import {
+  BookOpen,
+  Users,
+  Clock,
+  DollarSign,
+  Edit,
+  Plus,
+  Trash2,
+} from "lucide-react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+
+export const runtime = "nodejs"; // ✅ Force Node.js runtime
 
 async function getCourseDetails(courseId: number, teacherId: number) {
   const teacherProfile = await prisma.teacherProfile.findUnique({
@@ -18,7 +28,7 @@ async function getCourseDetails(courseId: number, teacherId: number) {
     },
     include: {
       lessons: {
-        orderBy: { orderIndex: 'asc' },
+        orderBy: { orderIndex: "asc" },
       },
       enrollments: {
         include: {
@@ -44,7 +54,7 @@ export default async function CourseDetailsPage({
   params: { courseId: string };
 }) {
   const session = await auth();
-  const userId = parseInt(session?.user?.id || '0');
+  const userId = parseInt(session?.user?.id || "0");
   const courseId = parseInt(params.courseId);
 
   const course = await getCourseDetails(courseId, userId);
@@ -55,7 +65,8 @@ export default async function CourseDetailsPage({
 
   const averageRating =
     course.reviews.length > 0
-      ? course.reviews.reduce((sum, r) => sum + r.rating, 0) / course.reviews.length
+      ? course.reviews.reduce((sum, r) => sum + r.rating, 0) /
+        course.reviews.length
       : 0;
 
   return (
@@ -70,11 +81,11 @@ export default async function CourseDetailsPage({
             <span
               className={`px-3 py-1 rounded-full text-xs font-semibold ${
                 course.isPublished
-                  ? 'bg-green-100 text-green-700'
-                  : 'bg-yellow-100 text-yellow-700'
+                  ? "bg-green-100 text-green-700"
+                  : "bg-yellow-100 text-yellow-700"
               }`}
             >
-              {course.isPublished ? 'Published' : 'Draft'}
+              {course.isPublished ? "Published" : "Draft"}
             </span>
           </div>
           <p className="text-gray-600">{course.description}</p>
@@ -163,7 +174,9 @@ export default async function CourseDetailsPage({
                           {lesson.title}
                         </h3>
                         <p className="text-sm text-gray-600">
-                          {lesson.duration ? `${lesson.duration} min` : 'No duration set'}
+                          {lesson.duration
+                            ? `${lesson.duration} min`
+                            : "No duration set"}
                         </p>
                       </div>
                     </div>
@@ -171,11 +184,11 @@ export default async function CourseDetailsPage({
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-semibold ${
                           lesson.isPublished
-                            ? 'bg-green-100 text-green-700'
-                            : 'bg-gray-200 text-gray-700'
+                            ? "bg-green-100 text-green-700"
+                            : "bg-gray-200 text-gray-700"
                         }`}
                       >
-                        {lesson.isPublished ? 'Published' : 'Draft'}
+                        {lesson.isPublished ? "Published" : "Draft"}
                       </span>
                       <button className="p-2 text-gray-600 hover:text-red-600 transition-colors">
                         <Trash2 className="w-4 h-4" />
@@ -226,9 +239,9 @@ export default async function CourseDetailsPage({
                     </div>
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                        enrollment.status === 'COMPLETED'
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-blue-100 text-blue-700'
+                        enrollment.status === "COMPLETED"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-blue-100 text-blue-700"
                       }`}
                     >
                       {enrollment.status}
@@ -260,13 +273,13 @@ export default async function CourseDetailsPage({
               <div>
                 <p className="text-sm text-gray-600">Category</p>
                 <p className="font-semibold text-gray-900">
-                  {course.category || 'Uncategorized'}
+                  {course.category || "Uncategorized"}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">Level</p>
                 <p className="font-semibold text-gray-900">
-                  {course.level || 'Not set'}
+                  {course.level || "Not set"}
                 </p>
               </div>
               <div>
@@ -276,13 +289,14 @@ export default async function CourseDetailsPage({
               <div>
                 <p className="text-sm text-gray-600">Duration</p>
                 <p className="font-semibold text-gray-900">
-                  {course.duration || 'Not set'}
+                  {course.duration || "Not set"}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">Average Rating</p>
                 <p className="font-semibold text-gray-900">
-                  ⭐ {averageRating.toFixed(1)} ({course.reviews.length} reviews)
+                  ⭐ {averageRating.toFixed(1)} ({course.reviews.length}{" "}
+                  reviews)
                 </p>
               </div>
             </div>
