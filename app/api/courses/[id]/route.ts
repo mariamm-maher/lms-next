@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+export const runtime = "nodejs"; // ✅ Force Node.js runtime
+
 // GET /api/courses/:id → Get a specific course
 export async function GET(
   req: Request,

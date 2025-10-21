@@ -1,6 +1,8 @@
-import { auth } from '@/auth';
-import { prisma } from '@/lib/prisma';
-import { NextResponse } from 'next/server';
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
+
+export const runtime = "nodejs"; // ✅ Force Node.js runtime
 
 // PUT /api/teacher/submissions/[submissionId] - Grade a submission
 export async function PUT(
@@ -10,8 +12,8 @@ export async function PUT(
   try {
     const session = await auth();
 
-    if (!session || session.user?.role !== 'TEACHER') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!session || session.user?.role !== "TEACHER") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const submissionId = parseInt(params.submissionId);
@@ -22,7 +24,10 @@ export async function PUT(
     });
 
     if (!teacherProfile) {
-      return NextResponse.json({ error: 'Teacher profile not found' }, { status: 404 });
+      return NextResponse.json(
+        { error: "Teacher profile not found" },
+        { status: 404 }
+      );
     }
 
     // Verify submission belongs to teacher's assignment
@@ -36,7 +41,10 @@ export async function PUT(
     });
 
     if (!submission) {
-      return NextResponse.json({ error: 'Submission not found' }, { status: 404 });
+      return NextResponse.json(
+        { error: "Submission not found" },
+        { status: 404 }
+      );
     }
 
     const body = await request.json();
@@ -46,14 +54,17 @@ export async function PUT(
       data: {
         grade: body.grade,
         feedback: body.feedback,
-        status: 'GRADED',
+        status: "GRADED",
         gradedAt: new Date(),
       },
     });
 
     return NextResponse.json(updatedSubmission);
   } catch (error) {
-    console.error('Error grading submission:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error("Error grading submission:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+export const runtime = "nodejs"; // ✅ Force Node.js runtime
+
 // GET /api/courses → Get all courses
 export async function GET() {
   try {
@@ -20,10 +22,10 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { 
-      title, 
-      description, 
-      teacherId, 
+    const {
+      title,
+      description,
+      teacherId,
       thumbnail,
       price,
       category,
@@ -34,7 +36,7 @@ export async function POST(req: Request) {
       tags,
       requirements,
       objectives,
-      isPublished
+      isPublished,
     } = body;
 
     if (!title || !teacherId)
@@ -51,7 +53,7 @@ export async function POST(req: Request) {
         duration,
         thumbnail,
         videoUrl,
-        language: language || 'English',
+        language: language || "English",
         tags: tags || [],
         requirements: requirements || [],
         objectives: objectives || [],

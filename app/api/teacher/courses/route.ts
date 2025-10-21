@@ -1,14 +1,16 @@
-import { auth } from '@/auth';
-import { prisma } from '@/lib/prisma';
-import { NextResponse } from 'next/server';
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
+
+export const runtime = "nodejs"; // ✅ Force Node.js runtime
 
 // GET /api/teacher/courses - Get all courses for the logged-in teacher
 export async function GET() {
   try {
     const session = await auth();
 
-    if (!session || session.user?.role !== 'TEACHER') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!session || session.user?.role !== "TEACHER") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const userId = parseInt(session.user.id);
@@ -18,7 +20,10 @@ export async function GET() {
     });
 
     if (!teacherProfile) {
-      return NextResponse.json({ error: 'Teacher profile not found' }, { status: 404 });
+      return NextResponse.json(
+        { error: "Teacher profile not found" },
+        { status: 404 }
+      );
     }
 
     const courses = await prisma.course.findMany({
@@ -28,7 +33,7 @@ export async function GET() {
         reviews: true,
         lessons: true,
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     });
 
     const coursesWithStats = courses.map((course) => ({
@@ -45,7 +50,8 @@ export async function GET() {
       enrollmentCount: course.enrollments.length,
       averageRating:
         course.reviews.length > 0
-          ? course.reviews.reduce((sum, r) => sum + r.rating, 0) / course.reviews.length
+          ? course.reviews.reduce((sum, r) => sum + r.rating, 0) /
+            course.reviews.length
           : 0,
       createdAt: course.createdAt.toISOString(),
       updatedAt: course.updatedAt.toISOString(),
@@ -53,8 +59,11 @@ export async function GET() {
 
     return NextResponse.json(coursesWithStats);
   } catch (error) {
-    console.error('Error fetching courses:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error("Error fetching courses:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
 
@@ -63,8 +72,8 @@ export async function POST(request: Request) {
   try {
     const session = await auth();
 
-    if (!session || session.user?.role !== 'TEACHER') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!session || session.user?.role !== "TEACHER") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const userId = parseInt(session.user.id);
@@ -74,7 +83,10 @@ export async function POST(request: Request) {
     });
 
     if (!teacherProfile) {
-      return NextResponse.json({ error: 'Teacher profile not found' }, { status: 404 });
+      return NextResponse.json(
+        { error: "Teacher profile not found" },
+        { status: 404 }
+      );
     }
 
     const body = await request.json();
@@ -90,7 +102,7 @@ export async function POST(request: Request) {
         duration: body.duration,
         thumbnail: body.thumbnail,
         videoUrl: body.videoUrl,
-        language: body.language || 'English',
+        language: body.language || "English",
         tags: body.tags || [],
         requirements: body.requirements || [],
         objectives: body.objectives || [],
@@ -100,7 +112,10 @@ export async function POST(request: Request) {
 
     return NextResponse.json(course, { status: 201 });
   } catch (error) {
-    console.error('Error creating course:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error("Error creating course:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

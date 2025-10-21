@@ -2,6 +2,8 @@ import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 
+export const runtime = "nodejs"; // ✅ Force Node.js runtime
+
 // POST /api/teacher/profile/setup - Create teacher profile if it doesn't exist
 export async function POST() {
   try {

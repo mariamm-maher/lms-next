@@ -1,14 +1,16 @@
-import { auth } from '@/auth';
-import { prisma } from '@/lib/prisma';
-import { NextResponse } from 'next/server';
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
+
+export const runtime = "nodejs"; // ✅ Force Node.js runtime
 
 // GET /api/teacher/submissions - Get all submissions for the teacher
 export async function GET(request: Request) {
   try {
     const session = await auth();
 
-    if (!session || session.user?.role !== 'TEACHER') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!session || session.user?.role !== "TEACHER") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const userId = parseInt(session.user.id);
@@ -18,11 +20,14 @@ export async function GET(request: Request) {
     });
 
     if (!teacherProfile) {
-      return NextResponse.json({ error: 'Teacher profile not found' }, { status: 404 });
+      return NextResponse.json(
+        { error: "Teacher profile not found" },
+        { status: 404 }
+      );
     }
 
     const { searchParams } = new URL(request.url);
-    const assignmentId = searchParams.get('assignmentId');
+    const assignmentId = searchParams.get("assignmentId");
 
     const submissions = await prisma.assignmentSubmission.findMany({
       where: {
@@ -39,7 +44,7 @@ export async function GET(request: Request) {
           },
         },
       },
-      orderBy: { submittedAt: 'desc' },
+      orderBy: { submittedAt: "desc" },
     });
 
     const submissionsWithDetails = submissions.map((submission) => ({
@@ -61,7 +66,10 @@ export async function GET(request: Request) {
 
     return NextResponse.json(submissionsWithDetails);
   } catch (error) {
-    console.error('Error fetching submissions:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error("Error fetching submissions:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

@@ -6,6 +6,8 @@ import {
 } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+export const runtime = "nodejs"; // ✅ Force Node.js runtime
+
 // GET /api/profile - Get user profile (authenticated users only)
 export async function GET(request: NextRequest) {
   try {
